@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { methodNotAllowed } from '../../middleware/method-not-allowed.js';
-import { getCategory, listCategories } from './categories.controller.js';
+import { getCategory, listCategories, createCategory } from './categories.controller.js';
 
 export const categoriesRouter = Router();
 
 categoriesRouter.route('/')
     .get(listCategories)
-    .all(methodNotAllowed('GET, HEAD'));
+    .post(createCategory)
+    .all(methodNotAllowed('GET, HEAD, POST'));
 
 categoriesRouter.route('/:slug')
     .get(getCategory)

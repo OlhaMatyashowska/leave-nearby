@@ -1,10 +1,19 @@
 import type { ErrorRequestHandler } from 'express';
 import { HttpError } from '../errors/http-error.js';
+import { z } from 'zod';
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     // 1. An expected error we threw ourselves → its own status and message
     if (err instanceof HttpError) {
         res.status(err.status).json({ error: err.message });
+        return;
+    }
+
+    if (err instanceof z.ZodError) {
+        res.status(400).json({
+            error: 'Validation failed',
+            details: z.flattenError(err),
+        });
         return;
     }
 

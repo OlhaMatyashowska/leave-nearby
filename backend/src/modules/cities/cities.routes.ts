@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { methodNotAllowed } from '../../middleware/method-not-allowed.js';
-import { getCity, listCities } from "./cities.controller.js"
+import { getCity, listCities, createCity } from "./cities.controller.js"
 
 export const citiesRouter = Router();
 
 citiesRouter.route('/')
     .get(listCities)
-    .all(methodNotAllowed('GET, HEAD'));
+    .post(createCity)
+    .all(methodNotAllowed('GET, HEAD, POST'));
 
 citiesRouter.route('/:slug')
     .get(getCity)

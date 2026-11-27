@@ -1,13 +1,21 @@
 import type { Request, Response } from 'express';
 import * as citiesService from './cities.service.js';
+import { listCitiesQuerySchema, cityParamsSchema, createCitySchema } from './cities.schemas.js'
 
 export function listCities(req: Request, res: Response) {
-    const search = req.query.search;
-    const cities = citiesService.getAllCities(search as string | undefined);
+    const { search } = listCitiesQuerySchema.parse(req.query);
+    const cities = citiesService.getAllCities(search);
     res.json(cities);
 }
 
-export function getCity(req: Request<{ slug: string }>, res: Response) {
-    const city = citiesService.getCityBySlug(req.params.slug);
+export function getCity(req: Request, res: Response) {
+    const { slug } = cityParamsSchema.parse(req.params);
+    const city = citiesService.getCityBySlug(slug);
     res.json(city);
+}
+
+export function createCity(req: Request, res: Response) {
+    const input = createCitySchema.parse(req.body);
+    const city = citiesService.createCity(input);
+    res.status(201).json(city);
 }
